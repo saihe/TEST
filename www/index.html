@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html ng-app="App">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/onsenui/js/onsenui.min.js"></script>
+    <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+    <!-- 外部ライブラリ -->
+    <script src="lib/3rd/ng-cordova-oauth.min.js"></script>
+    <script src="lib/3rd/openfb.js"></script>
+    
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script>
+        var app = angular.module("App", ["onsen", "ngCordovaOauth"]);
+        app.controller("ManagerController", function($scope){
+            showCtr1();
+            
+            function showCtr1(){
+                $scope.ctr1 = true;
+                $scope.ctr2 = false;
+            }
+            function showCtr2(){
+                $scope.ctr1 = false;
+                $scope.ctr2 = true;
+            }
+        });
+        app.controller("CommonController", function($scope){
+            $scope.btn_common = function(){
+                ons.notification.alert("common");
+            }
+        });
+        app.controller("FirstController", function($scope, $cordovaOauth){
+            $scope.btn_first = function(){
+                //ons.notification.alert("ngCordovaOauth");
+                $cordovaOauth.facebook(
+                    "1804414776482335",
+                    [
+                        "email"
+                    ]
+                ).then(function(res){
+                    console.log(res);
+                }, function(err){
+                    console.log(err);
+                });
+            }
+        });
+        app.controller("SecondController", function($scope){
+            $scope.btn_second = function(){
+                ons.notification.alert("btn2");
+            }
+        });
+    </script>
+</head>
+<body ng-controller="ManagerController">
+    <ons-page>
+        <table>
+            <tr ng-controller="CommonController">
+                <td><ons-button ng-click="btn_common()">共通</ons-button></td>
+            </tr>
+            <tr ng-controller="FirstController" ng-show="{{ctr1}}">
+                <td><ons-button ng-click="btn_first()">ngCordovaOauth</ons-button></td>
+            </tr>
+            <tr ng-controller="SecondController" ng-show="{{ctr2}}">
+                <td><ons-button ng-click="btn_second()">ボタン２</ons-button></td>
+            </tr>
+        </table>
+    </ons-page>
+</body>
+</html>
